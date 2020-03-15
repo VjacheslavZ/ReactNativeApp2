@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, StyleSheet, Text, Image, Button, ScrollView, Alert } from 'react-native';
 
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
