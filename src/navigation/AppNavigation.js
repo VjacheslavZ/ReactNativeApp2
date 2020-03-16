@@ -6,10 +6,13 @@ import { Platform } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 
 import { MainScreen } from "../screens/MainScreen";
 import { PostScreen } from "../screens/PostScreen";
 import { BookedScreen } from "../screens/BookedScreen";
+import { AboutScreen } from "../screens/AboutScreen";
+import { CreateScreen } from "../screens/CreateScreen";
 
 import { THEME } from "../theme";
 
@@ -20,7 +23,7 @@ const navigatorOptions = {
     },
     headerTintColor: Platform.OS === 'android' ? '#fff' : THEME.MAIN_COLOR
   }
-}
+};
 
 const PostNavigator = createStackNavigator({
   Main: MainScreen,
@@ -63,4 +66,41 @@ const BottomNavigator = Platform.OS === 'android'
   }
 });
 
-export const AppNavigation = createAppContainer(BottomNavigator);
+const AboutNavigator = createStackNavigator({
+  About: AboutScreen
+}, navigatorOptions)
+
+const CreateNavigator = createStackNavigator({
+  Create: CreateScreen
+}, navigatorOptions)
+
+const MainNavigator = createDrawerNavigator({
+  PostTabs: {
+    screen: BottomNavigator,
+    navigationOptions: {
+      drawerLabel: 'Main',
+      drawerIcon: <Ionicons name='ios-star'/>
+    }
+  },
+  About: {
+    screen: AboutNavigator,
+    navigationOptions: {
+      drawerLabel: 'About App'
+    }
+  },
+  Create: {
+    screen: CreateNavigator,
+    navigationOptions: {
+      drawerLabel: 'New post'
+    }
+  }
+}, {
+  contentOptions: {
+    activeTintColor: THEME.MAIN_COLOR,
+    labelStyle: {
+      fontFamily: 'open-bold'
+    }
+  }
+});
+
+export const AppNavigation = createAppContainer(MainNavigator);
