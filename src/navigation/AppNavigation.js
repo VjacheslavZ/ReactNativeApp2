@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Platform } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 import { MainScreen } from "../screens/MainScreen";
 import { PostScreen } from "../screens/PostScreen";
@@ -12,47 +13,51 @@ import { BookedScreen } from "../screens/BookedScreen";
 
 import { THEME } from "../theme";
 
-const PostNavigator = createStackNavigator({
-  Main: MainScreen,
-  Post: {
-    screen: PostScreen,
-  },
-}, {
-  initialRouteName: 'Main',
+const navigatorOptions = {
   defaultNavigationOptions: {
     headerStyle: {
       backgroundColor: Platform.OS === 'android' ? THEME.MAIN_COLOR : '#fff',
     },
     headerTintColor: Platform.OS === 'android' ? '#fff' : THEME.MAIN_COLOR
   }
-});
+}
+
+const PostNavigator = createStackNavigator({
+  Main: MainScreen,
+  Post: PostScreen,
+}, navigatorOptions);
 
 const BookedNavigator = createStackNavigator({
   Booked: BookedScreen,
   Post: PostScreen,
-}, {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: Platform.OS === 'android' ? THEME.MAIN_COLOR : '#fff',
-    },
-    headerTintColor: Platform.OS === 'android' ? '#fff' : THEME.MAIN_COLOR
-  }
-});
+}, navigatorOptions);
 
-const BottomNavigator = createBottomTabNavigator({
+const bottomTabsConfig = {
   Post: {
     screen: PostNavigator,
     navigationOptions: {
+      tabBarLabel: 'All',
+      shifting: true,
       tabBarIcon: info => <Ionicons name='ios-albums' size={25} color={info.tintColor}/>
     }
   },
   Booked: {
     screen: BookedNavigator,
     navigationOptions: {
+      tabBarLabel: 'Favorites',
       tabBarIcon: info => <Ionicons name='ios-star' size={25} color={info.tintColor}/>
     }
   }
-}, {
+}
+
+const BottomNavigator = Platform.OS === 'android'
+  ? createMaterialBottomTabNavigator(bottomTabsConfig, {
+    activeTintColor: '#fff',
+    barStyle: {
+      backgroundColor: THEME.MAIN_COLOR,
+    }
+  })
+  : createBottomTabNavigator(bottomTabsConfig, {
   tabBarOptions: {
     activeTintColor: THEME.MAIN_COLOR,
   }
